@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Pokémon Team Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="pokestyle.css" />
+</head>
+
+<script>
+    // Remember to start the server by going to the server folder, running the cmd in it, and type in "node app.js:
+    // Also remember to stop the server with Ctrl + C in the cmd window
+
+    // Use a placeholder that will be replaced by a human-readable list of required Pokémon
+    const startingPrompt = `I want to start a new play through of Pokémon [game]. Generate me a balanced team of six Pokémon suitable for this game, including their types, abilities, and move sets. Make sure that this Pokémon team includes [requiredPokemonList]. Also provide me with information on how I can obtain each Pokémon. If a Pokémon needs a TM to learn a specific move, mention that as well as where it can be found in [game]. Also, provide a brief explanation of why each Pokémon was chosen for this team.`;
+
+    function escapeHtml(text) {
+        return String(text).replace(/[&<>\"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+    }
+
+    // Build a human-readable list from an array: "A", "A and B", or "A, B, and C"
+    function humanList(arr) {
+        const filtered = arr.map(s => s.trim()).filter(s => s.length > 0);
+        if (filtered.length === 0) return '<none>';
+        if (filtered.length === 1) return filtered[0];
+        if (filtered.length === 2) return `${filtered[0]} and ${filtered[1]}`;
+        return filtered.slice(0, -1).join(', ') + ', and ' + filtered.slice(-1);
+    }
+
+    function generatePrompt() {
+        const errorBanner = document.getElementById('errorBanner');
+        errorBanner.hidden = true;
+
+        // Clear all error messages at the start
+        const errorMessages = document.querySelectorAll('.text-danger');
+        for (let htmlElement of errorMessages) {
+            htmlElement.innerHTML = '';
+        }
+
+        const gameSelect = document.getElementById('game');
+        const game = gameSelect.value.trim();
+
+        // Collect all required Pokémon inputs
+        const inputs = Array.from(document.querySelectorAll('.required-pokemon'));
+        const pokemon1Input = document.getElementById('pokemon1');
+        const names = inputs.map(i => i.value.trim()).filter(v => v.length > 0);
+
+        const listText = humanList(names);
+
+        const fullPrompt = startingPrompt.replace('[game]', escapeHtml(game || '<unknown>'))
+            .replace('[requiredPokemonList]', escapeHtml(listText)).replace(/\[game\]/g, escapeHtml(game || '<unknown>'));
+
+        const textarea = document.getElementById('promptTextArea');
+        if (textarea) textarea.value = fullPrompt;
+
+        let formData = new FormData();
+        formData.set('message', fullPrompt);
+        formData.set('game', game);
+        formData.set('pokemon1', pokemon1Input.value.trim());
+
+        // Add all pokemon fields
+        for (let i = 2; i <= 6; i++) {
+            const pokemonInput = document.getElementById(`pokemon${i}`);
+            if (pokemonInput) {
+                formData.set(`pokemon${i}`, pokemonInput.value.trim());
+            }
+        }
+
+        // Show loading spinner using toggle
+        document.getElementById('loadingSpinner').classList.toggle('active', true);
+
+        // programatically talks to servers at the location from parameter q with the settings from parameter 2
+        fetch(
+            'http://127.0.0.1:3000',    // parameter 1: URL
+            {                           // parameter 2: settings
+                method: 'POST',         // method is the type of request
+                body: formData          // body is the data sent
+            })
+            // fetch() is a promise
+            // DON'T RUN THIS NEXT LINE OF CODE UNTIL fetch() is DONE
+            .then(response => {
+                return new Promise((resolve) => response.json()
+                    .then((json) => resolve({
+                        status: response.status,
+                        json,
+                    })
+                    ));
+                //return response.text();
+            })
+            .then(({ status, json }) => {
+                // Hide loading spinner using toggle
+                document.getElementById('loadingSpinner').classList.toggle('active', false);
+
+                if (status !== 200 || json.error) {
+                    errorBanner.innerText = "Form has errors. Please correct and resubmit.";
+                    errorBanner.hidden = false;
+                    if (json.errors) {
+                        for (let error of json.errors) {
+                            const errorID = error.path + '-error';
+                            document.getElementById(errorID).innerHTML = error.msg;
+                        }
+                    }
+                } else {
+                    // Display output in full screen
+                    const outputContent = document.getElementById('outputContent');
+                    outputContent.innerHTML = json.text.replace(/\n/g, '<br>');
+                    document.getElementById('outputScreen').classList.toggle('active', true);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('loadingSpinner').classList.toggle('active', false);
+                alert('An error occurred: ' + error.message);
+            });
+        return;
+    }
+
+    // Close the full-screen output
+    function closeOutput() {
+        document.getElementById('outputScreen').classList.toggle('active', false);
+    }
+
+    // Add interactivity indicators
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add focus indicators to inputs
+        const inputs = document.querySelectorAll('.required-pokemon');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function () {
+                this.classList.add('focused');
+            });
+            input.addEventListener('blur', function () {
+                this.classList.remove('focused');
+                if (this.value.trim().length > 0) {
+                    this.classList.add('filled');
+                } else {
+                    this.classList.remove('filled');
+                }
+            });
+        });
+
+        // Add hover indicator to generate button
+        const generateBtn = document.getElementById('generateBtn');
+        generateBtn.addEventListener('mouseenter', function () {
+            this.classList.add('hovered');
+        });
+        generateBtn.addEventListener('mouseleave', function () {
+            this.classList.remove('hovered');
+        });
+
+        // Add focus indicator to select
+        const gameSelect = document.getElementById('game');
+        gameSelect.addEventListener('focus', function () {
+            this.classList.add('focused');
+        });
+        gameSelect.addEventListener('blur', function () {
+            this.classList.remove('focused');
+        });
+    });
+
+    // Add a new required-pokemon input up to a maximum of 6
+    function addPokemonField() {
+        const container = document.getElementById('requiredPokemonContainer');
+        const current = container.querySelectorAll('.required-pokemon').length;
+        const max = 6;
+        if (current >= max) {
+            const btn = document.getElementById('addPokemonBtn');
+            if (btn) btn.disabled = true;
+            return;
+        }
+
+        const nextIndex = current + 1; // 1-based
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pokemon-input-wrapper';
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = `pokemon${nextIndex}`;
+        input.name = `pokemon${nextIndex}`;
+        input.className = 'required-pokemon';
+        input.placeholder = 'Enter Pokémon Name';
+
+        // Add event listeners for new input
+        input.addEventListener('focus', function () {
+            this.classList.add('focused');
+        });
+        input.addEventListener('blur', function () {
+            this.classList.remove('focused');
+            if (this.value.trim().length > 0) {
+                this.classList.add('filled');
+            } else {
+                this.classList.remove('filled');
+            }
+        });
+
+        wrapper.appendChild(input);
+
+        // Add error div for new pokemon field
+        const errorDiv = document.createElement('div');
+        errorDiv.id = `pokemon${nextIndex}-error`;
+        errorDiv.className = 'text-danger';
+        wrapper.appendChild(errorDiv);
+
+        container.appendChild(wrapper);
+
+        // Disable add button when reaching max
+        if (current + 1 >= max) {
+            const btn = document.getElementById('addPokemonBtn');
+            if (btn) btn.disabled = true;
+        }
+    }
+</script>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="../../index.html">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Previous Work
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="../../blindfear.html">Blind Fear</a></li>
+                            <li><a class="dropdown-item" href="../../monstermodel.html">3D Monster Model</a></li>
+                            <li><a class="dropdown-item"
+                                    href="../../Pokemon%20Team%20Builder/client/pokebuilder.html">AI Integrated Pokemon
+                                    Team Building Website</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div
+        style="background: #fff; padding: 30px; margin: 20px auto; max-width: 900px; border: 6px solid #000; border-radius: 12px; box-shadow: 8px 8px 0 rgba(0,0,0,0.8);">
+        <h1
+            style="font-family: 'Press Start 2P', cursive; font-size: 0.9rem; line-height: 1.6; color: #2a75bb; text-shadow: none; letter-spacing: 1px;">
+            Welcome!
+        </h1>
+        <p
+            style="font-family: 'Press Start 2P', cursive; font-size: 0.7rem; line-height: 1.; color: #2a75bb; text-shadow: none; letter-spacing: 1px;">
+            This website is one of my many projects from my Junior year in the GIMM program at BSU. Though now defunct, when everything was
+            set up properly, this website connects to ChatGPT and allows you to generate a team of 6 Pokemon for any
+            game in the series (up to Legends ZA). It comes included with reccomended abilities, movesets, held items,
+            and where
+            each Pokemon can be obtained in the selected game.
+        </p>
+    </div>
+
+    <div class="header">
+        <h1>Pokémon Team Generator</h1>
+        <div class="header-image-container">
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+                alt="Pokeball icon" class="pokeball-logo" />
+        </div>
+        <div id="errorBanner" class="alert alert-danger" role="alert" hidden></div>
+        <p>
+            Choose your Pokémon Game.
+        </p>
+        <select id="game">
+            <option value="">-- Select a Game --</option>
+            <option value="Red">Red</option>
+            <option value="Blue">Blue</option>
+            <option value="Yellow">Yellow</option>
+            <option value="Gold">Gold</option>
+            <option value="Silver">Silver</option>
+            <option value="Crystal">Crystal</option>
+            <option value="Ruby">Ruby</option>
+            <option value="Sapphire">Sapphire</option>
+            <option value="Emerald">Emerald</option>
+            <option value="FireRed">FireRed</option>
+            <option value="LeafGreen">LeafGreen</option>
+            <option value="Colosseum">Colosseum</option>
+            <option value="XD: Gale of Darkness">XD: Gale of Darkness</option>
+            <option value="Diamond">Diamond</option>
+            <option value="Pearl">Pearl</option>
+            <option value="Platinum">Platinum</option>
+            <option value="HeartGold">HeartGold</option>
+            <option value="SoulSilver">SoulSilver</option>
+            <option value="Black">Black</option>
+            <option value="White">White</option>
+            <option value="Black 2">Black 2</option>
+            <option value="White 2">White 2</option>
+            <option value="X">X</option>
+            <option value="Y">Y</option>
+            <option value="Omega Ruby">Omega Ruby</option>
+            <option value="Alpha Sapphire">Alpha Sapphire</option>
+            <option value="Sun">Sun</option>
+            <option value="Moon">Moon</option>
+            <option value="Ultra Sun">Ultra Sun</option>
+            <option value="Ultra Moon">Ultra Moon</option>
+            <option value="Let's Go Pikachu">Let's Go Pikachu</option>
+            <option value="Let's Go Eevee">Let's Go Eevee</option>
+            <option value="Sword">Sword</option>
+            <option value="Shield">Shield</option>
+            <option value="Brilliant Diamond">Brilliant Diamond</option>
+            <option value="Shining Pearl">Shining Pearl</option>
+            <option value="Legends: Arceus">Legends: Arceus</option>
+            <option value="Scarlet">Scarlet</option>
+            <option value="Violet">Violet</option>
+            <option value="Legends: Z/A">Legends: Z/A</option>
+        </select>
+        <div id="game-error" class="text-danger"></div>
+        <p>
+            Choose one or more Pokémon that must be included in the team (you can add up to 6).
+        </p>
+        <div id="requiredPokemonContainer">
+            <div class="pokemon-input-wrapper">
+                <input type="text" id="pokemon1" name="pokemon1" class="required-pokemon"
+                    placeholder="Enter Pokémon Name" />
+                <div id="pokemon1-error" class="text-danger"></div>
+            </div>
+        </div>
+        <div style="margin-top:8px;">
+            <button id="addPokemonBtn" onclick="addPokemonField()">Add Pokémon</button>
+            <small style="margin-left:8px;">(Max 6)</small>
+        </div>
+
+        <div style="margin-top:16px;">
+            <button id="generateBtn" onclick="generatePrompt()">Generate Prompt</button>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-overlay">
+        <div class="pokeball-spinner"></div>
+        <p class="loading-text">Generating team...</p>
+    </div>
+
+    <!-- Full Screen Output -->
+    <div id="outputScreen" class="output-overlay">
+        <div class="output-container">
+            <button class="close-btn" onclick="closeOutput()">✕ Close</button>
+            <div id="outputContent" class="output-content"></div>
+        </div>
+    </div>
+
+    <div id='footer'>
+        <div class="row">
+            <p>Find me at:</p>
+            <div class="col-md-3">
+                <p>
+                    <a href='nicholasrichter2001@gmail.com'>
+                        <i class='fa-2x fa-solid fa-envelope'></i> Email
+                    </a>
+                </p>
+            </div>
+
+            <div class="col-md-3">
+                <p>
+                    <a href='https://www.linkedin.com/in/nicholas-roy-richter-dev0226/'>
+                        <i class='fa-2x fa-brands fa-linkedin'></i> LinkedIn
+                    </a>
+                </p>
+            </div>
+
+            <div class="col-md-3">
+                <p>
+                    <a href='https://github.com/NR-Richter'>
+                        <i class='fa-2x fa-brands fa-github'></i> Github
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class='ribbon'></div>
+</body>
+
+</html>

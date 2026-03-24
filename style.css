@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Rajdhani:wght@400;500;700&display=swap');
+
+:root {
+	--bg-0: #05070b;
+	--bg-1: #0b111a;
+	--panel: rgba(9, 18, 30, 0.84);
+	--line: rgba(0, 183, 255, 0.32);
+	--neon: #00b7ff;
+	--neon-soft: #64d6ff;
+	--text: #d7edff;
+	--text-dim: #9fb9ce;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	color: var(--text);
+	font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+	background:
+		radial-gradient(circle at 18% 12%, rgba(0, 183, 255, 0.2), transparent 34%),
+		radial-gradient(circle at 84% 84%, rgba(0, 105, 170, 0.2), transparent 36%),
+		linear-gradient(155deg, var(--bg-0), var(--bg-1));
+		text-align: center;
+}
+
+#footer {
+	margin-top: auto;
+	padding: 1.5rem 1rem 2rem;
+}
+
+#footer .row {
+	justify-content: center;
+	text-align: center;
+	row-gap: 0.5rem;
+}
+
+#footer .col-md-3 {
+	display: flex;
+	justify-content: center;
+}
+
+body::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	background-image:
+		linear-gradient(rgba(100, 214, 255, 0.06) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(100, 214, 255, 0.06) 1px, transparent 1px);
+	background-size: 34px 34px;
+	mask-image: radial-gradient(circle at center, black 45%, transparent 92%);
+	z-index: -1;
+}
+
+.navbar.bg-body-tertiary {
+	background: rgba(5, 14, 24, 0.92) !important;
+	border-bottom: 1px solid var(--line);
+	box-shadow: 0 10px 34px rgba(0, 0, 0, 0.42);
+	backdrop-filter: blur(10px);
+}
+
+.navbar .navbar-nav {
+	gap: 6px;
+}
+
+.navbar .nav-link {
+	color: var(--text-dim);
+	font-family: 'Orbitron', 'Segoe UI', sans-serif;
+	font-size: 0.88rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	border: 1px solid transparent;
+	border-radius: 10px;
+	transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus,
+.navbar .nav-link.active {
+	color: var(--neon-soft);
+	border-color: var(--line);
+	background: rgba(0, 183, 255, 0.08);
+}
+
+.navbar .navbar-toggler {
+	border-color: rgba(0, 183, 255, 0.5);
+}
+
+.navbar .navbar-toggler:focus {
+	box-shadow: 0 0 0 0.2rem rgba(0, 183, 255, 0.25);
+}
+
+.navbar .navbar-toggler-icon {
+	filter: invert(1) brightness(1.7);
+}
+
+.dropdown-menu {
+	background: rgba(6, 13, 22, 0.97);
+	border: 1px solid var(--line);
+	border-radius: 12px;
+	padding: 0.4rem;
+	box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+}
+
+.dropdown-item {
+	color: var(--text-dim);
+	border-radius: 8px;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+	color: var(--neon-soft);
+	background: rgba(0, 183, 255, 0.12);
+}
+
+.container {
+	margin-top: 2.5rem;
+	padding: 2rem;
+	background: var(--panel);
+	border: 1px solid var(--line);
+	border-radius: 18px;
+	box-shadow:
+		0 22px 42px rgba(0, 0, 0, 0.45),
+		inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+#content.container {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	max-width: 1000px;
+	margin: 1.5rem auto;
+}
+
+h1,
+h2 {
+	margin: 0 0 1rem;
+	font-family: 'Orbitron', 'Segoe UI', sans-serif;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--neon-soft);
+	text-shadow: 0 0 20px rgba(0, 183, 255, 0.28);
+}
+
+h1 {
+	font-size: clamp(1.6rem, 3vw, 2.4rem);
+}
+
+h2 {
+	font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+}
+
+p {
+	margin: 0;
+	font-size: 1.2rem;
+	line-height: 1.65;
+	color: var(--text);
+}
+
+@media (max-width: 768px) {
+	body {
+		padding: 0;
+	}
+
+	.container {
+		margin: 1rem;
+		padding: 1.25rem;
+	}
+
+	#content.container {
+		margin: 1rem;
+	}
+
+	p {
+		font-size: 1.08rem;
+	}
+}

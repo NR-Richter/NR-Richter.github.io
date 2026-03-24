@@ -1,0 +1,717 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Press Start 2P', cursive;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    image-rendering: pixelated;
+}
+
+nav {
+    font-family: 'Press Start 2P', cursive;
+    background: #667eea;
+    image-rendering: pixelated;
+}
+
+.navbar.bg-body-tertiary {
+    background-color: #667eea !important;
+}
+
+.game-container {
+    background: #f8f8f8;
+    border: 8px solid #000;
+    border-radius: 20px;
+    box-shadow:
+        0 0 0 4px #fff,
+        0 0 0 8px #000,
+        0 20px 50px rgba(0, 0, 0, 0.5);
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+}
+
+.screen {
+    background: #e8f4e8;
+    border: 6px solid #000;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.screen::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 12px;
+    height: 12px;
+    background: #00ff00;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #00ff00;
+    animation: blink 2s infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    50%,
+    100% {
+        opacity: 1;
+    }
+
+    25%,
+    75% {
+        opacity: 0.3;
+    }
+}
+
+.title-box {
+    background: #fff;
+    border: 4px solid #000;
+    padding: 15px;
+    margin-bottom: 25px;
+    text-align: center;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+    font-size: 1.5rem;
+    color: #ffcb05;
+    text-shadow:
+        3px 3px 0 #2a75bb,
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
+    letter-spacing: 2px;
+}
+
+.dialog-box {
+    background: #fff;
+    border: 4px solid #000;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.dialog-box::after {
+    content: '▼';
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    font-size: 0.8rem;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-size: 0.7rem;
+    color: #2a75bb;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+input[type="text"],
+select,
+input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    border: 3px solid #000;
+    background: #fff;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.7rem;
+    box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.2);
+    transition: all 0.2s;
+}
+
+input[type="text"]:focus,
+select:focus {
+    outline: none;
+    border-color: #ffcb05;
+    box-shadow:
+        inset 2px 2px 0 rgba(0, 0, 0, 0.2),
+        0 0 0 3px #2a75bb;
+}
+
+select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23000' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+}
+
+optgroup {
+    font-weight: bold;
+    background: #e8f4e8;
+}
+
+option {
+    padding: 8px;
+}
+
+input[type="file"] {
+    padding: 8px;
+    font-size: 0.6rem;
+}
+
+input[type="file"]::file-selector-button {
+    padding: 8px 16px;
+    border: 3px solid #000;
+    background: #ffcb05;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.6rem;
+    cursor: pointer;
+    margin-right: 10px;
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+    transition: all 0.1s;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background: #ffd93d;
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
+}
+
+input[type="file"]::file-selector-button:active {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.button-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+input[type="submit"],
+.button {
+    padding: 15px 30px;
+    border: 4px solid #000;
+    background: #ff0000;
+    color: #fff;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    cursor: pointer;
+    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.4);
+    transition: all 0.1s;
+    text-transform: uppercase;
+}
+
+input[type="submit"]:hover,
+.button:hover {
+    background: #ff3333;
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 rgba(0, 0, 0, 0.4);
+}
+
+input[type="submit"]:active,
+.button:active {
+    transform: translate(2px, 2px);
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+}
+
+.pokeball {
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(180deg, #ff0000 50%, #fff 50%);
+    border: 3px solid #000;
+    border-radius: 50%;
+    position: relative;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.pokeball::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border: 2px solid #000;
+    border-radius: 50%;
+}
+
+.pokeball::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #000;
+    transform: translateY(-50%);
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 1rem;
+    }
+
+    label,
+    input[type="text"],
+    select {
+        font-size: 0.6rem;
+    }
+
+    input[type="submit"] {
+        font-size: 0.7rem;
+        padding: 12px 20px;
+    }
+}
+
+/* ===== Retro Pokémon-style tweaks ===== */
+
+/* Header container that looks like a cartridge/screen border */
+.header {
+    background: linear-gradient(180deg, #f6f6f6 0%, #e8f4e8 100%);
+    border: 6px solid #000;
+    padding: 18px;
+    border-radius: 12px;
+    max-width: 820px;
+    width: 100%;
+    margin: 20px auto;
+    box-shadow: 8px 8px 0 rgba(0,0,0,0.8), inset 0 6px 0 rgba(255,255,255,0.4);
+}
+
+/* Give labels and small UI elements a compact pixel look */
+.pokemon-input-wrapper {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.pokemon-input-wrapper label {
+    min-width: 90px;
+    font-size: 0.65rem;
+    color: #2a75bb;
+    text-transform: uppercase;
+}
+
+.required-pokemon {
+    flex: 1 1 auto;
+    padding: 10px;
+    border: 4px solid #000;
+    background: #fff;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.7rem;
+    box-shadow: inset 2px 2px 0 rgba(0,0,0,0.2);
+}
+
+/* Buttons get chunky pixel borders and a yellow accent like menus */
+button, .button, input[type="submit"] {
+    padding: 12px 18px;
+    border: 6px solid #000;
+    background: linear-gradient(180deg, #ffcb05 0%, #ffb700 100%);
+    color: #000;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.7rem;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.5);
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+button:active, .button:active, input[type="submit"]:active {
+    transform: translate(3px,3px);
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+}
+
+/* Make the generate and add buttons stand out */
+#generateBtn {
+    background: linear-gradient(180deg,#ff4b4b 0%, #d90000 100%);
+    color: #fff;
+    border: 6px solid #000;
+}
+
+#addPokemonBtn {
+    background: linear-gradient(180deg,#2a75bb 0%, #144a86 100%);
+    color: #fff;
+    border: 6px solid #000;
+}
+
+/* Prompt textarea styled like an in-game text box */
+#promptTextArea {
+    width: 100%;
+    padding: 12px;
+    border: 6px solid #000;
+    background: linear-gradient(180deg,#fff 0%, #f2f2f2 100%);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.6rem;
+    line-height: 1.2;
+    box-shadow: inset 2px 2px 0 rgba(0,0,0,0.15);
+    resize: vertical;
+}
+
+/* Slightly reduce select size and give it the pixel border */
+select {
+    border: 4px solid #000;
+    padding: 10px;
+    background: #fff;
+}
+
+/* Make small text more readable on pixel font */
+small {
+    font-size: 0.6rem;
+    color: #222;
+}
+
+/* Responsive tweaks: compress layout on small screens */
+@media (max-width: 600px) {
+    .pokemon-input-wrapper label { min-width: 70px; font-size: 0.55rem; }
+    button, .button, input[type="submit"] { padding: 10px 12px; font-size: 0.6rem; }
+    #promptTextArea { font-size: 0.55rem; }
+}
+
+/* End retro tweaks */
+
+/* Loading Spinner Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    pointer-events: none;
+}
+
+.loading-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.pokeball-spinner {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(180deg, #ff0000 50%, #fff 50%);
+    border: 6px solid #000;
+    border-radius: 50%;
+    position: relative;
+    animation: spin 1s linear infinite;
+}
+
+.pokeball-spinner::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border: 4px solid #000;
+    border-radius: 50%;
+}
+
+.pokeball-spinner::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: #000;
+    transform: translateY(-50%);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    margin-top: 30px;
+    color: #fff;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1rem;
+    text-align: center;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Full Screen Output Overlay */
+.output-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    padding: 20px;
+    overflow: auto;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    pointer-events: none;
+}
+
+.output-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.output-container {
+    background: linear-gradient(180deg, #f6f6f6 0%, #e8f4e8 100%);
+    border: 8px solid #000;
+    border-radius: 12px;
+    box-shadow: 0 0 40px rgba(255, 203, 5, 0.5);
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 30px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 10px 15px;
+    border: 4px solid #000;
+    background: linear-gradient(180deg, #ff4b4b 0%, #d90000 100%);
+    color: #fff;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.7rem;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+    transition: all 0.1s;
+}
+
+.close-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5);
+}
+
+.close-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.output-content {
+    background: #fff;
+    border: 6px solid #000;
+    border-radius: 8px;
+    padding: 25px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.7rem;
+    line-height: 1.8;
+    color: #000;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive for output screen */
+@media (max-width: 600px) {
+    .output-container {
+        padding: 20px;
+        border-width: 6px;
+    }
+    
+    .output-content {
+        font-size: 0.6rem;
+        padding: 15px;
+    }
+    
+    .close-btn {
+        font-size: 0.6rem;
+        padding: 8px 12px;
+    }
+    
+    .loading-text {
+        font-size: 0.8rem;
+    }
+}
+
+/* ===== Validation Error Messages ===== */
+
+/* Error message styling */
+.text-danger {
+    color: #d90000;
+    background: #ffe8e8;
+    border: 3px solid #d90000;
+    padding: 8px 12px;
+    margin-top: 6px;
+    margin-bottom: 10px;
+    font-size: 0.6rem;
+    border-radius: 4px;
+    display: none;
+    min-height: 32px;
+    font-family: 'Press Start 2P', cursive;
+    line-height: 1.4;
+    animation: shake 0.3s ease-in-out;
+}
+
+/* Show error messages when they have content */
+.text-danger:not(:empty) {
+    display: block;
+}
+
+.error-message {
+    color: #d90000;
+    background: #ffe8e8;
+    border: 3px solid #d90000;
+    padding: 8px 12px;
+    margin-top: 6px;
+    font-size: 0.6rem;
+    border-radius: 4px;
+    display: none;
+    animation: shake 0.3s ease-in-out;
+}
+
+.error-message.show {
+    display: block;
+}
+
+/* Shake animation for error messages */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Bootstrap Alert customization for error banner */
+.alert-danger {
+    background: linear-gradient(180deg, #ff6b6b 0%, #ff4444 100%);
+    border: 4px solid #000;
+    color: #fff;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.65rem;
+    padding: 12px 15px;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+    margin-bottom: 15px;
+}
+
+.alert-danger.show {
+    display: block;
+    animation: slideDown 0.3s ease-out;
+}
+
+/* Slide down animation for error banner */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Input focus state with classList */
+.required-pokemon.focused,
+select.focused {
+    border-color: #2a75bb;
+    box-shadow:
+        inset 2px 2px 0 rgba(0, 0, 0, 0.2),
+        0 0 0 4px rgba(42, 117, 187, 0.3);
+}
+
+/* Input filled state */
+.required-pokemon.filled {
+    background: #f0f8ff;
+}
+
+/* Button hover state */
+#generateBtn.hovered {
+    transform: scale(1.05);
+}
+
+/* Header image container */
+.header-image-container {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.pokeball-logo {
+    width: 60px;
+    height: 60px;
+    image-rendering: pixelated;
+    filter: drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.3));
+}
+
+/* Responsive adjustments for error messages */
+@media (max-width: 600px) {
+    .error-message {
+        font-size: 0.55rem;
+        padding: 6px 10px;
+    }
+    
+    .alert-danger {
+        font-size: 0.6rem;
+        padding: 10px 12px;
+    }
+    
+    .pokeball-logo {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+#footer {
+	margin-top: auto;
+	padding: 1.5rem 1rem 2rem;
+}
+
+#footer .row {
+	justify-content: center;
+	text-align: center;
+	row-gap: 0.5rem;
+}
+
+#footer .col-md-3 {
+	display: flex;
+	justify-content: center;
+}
